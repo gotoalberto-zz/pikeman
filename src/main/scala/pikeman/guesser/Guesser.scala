@@ -12,13 +12,15 @@ class Guesser(strategy: GuesserStrategy, reader: Reader, writer: Writer) {
     do {
       output.println(strategy.guess())
       feedback = Option(input.readLine()).flatMap(parseFeedback)
+      feedback.foreach(strategy.learn)
     } while(feedback.nonEmpty)
   }
 
   def parseFeedback(line: String): Option[Feedback] = line match {
-    case "-" => Some(Greater)
-    case "+" => Some(Lower)
+    case "-" => Some(Lower)
+    case "+" => Some(Greater)
     case "<>" => Some(NotGuessed)
+    case "=" => Some(Guessed)
     case _ =>
       output.println(s"unexpected input: '$line'")
       None
